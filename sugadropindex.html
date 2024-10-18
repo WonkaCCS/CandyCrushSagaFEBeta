@@ -80,7 +80,6 @@
             top: 260px;
             right: 20px;
             background-image: url('get_basilisk.png');
-            display: none; /* Initially hidden */
         }
 
         #basiliskButton:active {
@@ -98,28 +97,6 @@
         }
     </style>
     <script>
-        function detectFlash() {
-            let hasFlash = false;
-
-            if (navigator.plugins && navigator.plugins.length > 0) {
-                hasFlash = !!navigator.plugins["Shockwave Flash"];
-            } else if (typeof ActiveXObject !== "undefined") {
-                try {
-                    let flash = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
-                    if (flash) {
-                        hasFlash = true;
-                    }
-                } catch (e) {
-                    hasFlash = false;
-                }
-            }
-
-            // Show Basilisk button if Flash is not detected
-            if (!hasFlash) {
-                document.getElementById("basiliskButton").style.display = "block";
-            }
-        }
-
         function getRandomBackground() {
             const num = Math.floor(Math.random() * 20) + 1;
             return `bg${num}.jpg`;
@@ -136,7 +113,6 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             document.body.style.backgroundImage = `url('${getRandomBackground()}')`;
-            detectFlash();
         });
 
         window.getLevelCode = function() {

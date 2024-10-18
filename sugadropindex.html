@@ -1,9 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candy Crush Custom Level</title>
     <style>
         body {
@@ -62,11 +59,11 @@
         #sugarDropButton {
             top: 140px;
             right: 20px;
-            background-image: url('enable_sugardrops.png');
+            background-image: url('disable_sugar_drops.png');
         }
 
         #sugarDropButton:active {
-            background-image: url('enable_sugardrops_pressed.png');
+            background-image: url('disable_sugardrops_pressed.png');
         }
 
         #editorButton {
@@ -137,17 +134,12 @@
             return null;
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            detectFlash();
+        document.addEventListener("DOMContentLoaded", function() {
             document.body.style.backgroundImage = `url('${getRandomBackground()}')`;
-
-            const decodedLevelCode = decodeLevelCode();
-            if (decodedLevelCode && decodedLevelCode.includes('"enableSugarTrack":true')) {
-                enableSugarDrops();
-            }
+            detectFlash();
         });
 
-        window.getLevelCode = function () {
+        window.getLevelCode = function() {
             console.log("GetLevelCode");
             return decodeURIComponent(location.search.split("levelCode=")[1].split("&")[0]).replaceAll("\"", "&quot;");
         };
@@ -159,11 +151,11 @@
                     flashElement.getLevelCode(decodeURIComponent(location.search.split("levelCode=")[1].split("&")[0]));
                 } else {
                     console.error("getLevelCode is not a function on flash element");
-                    setTimeout(callGetLevelCode, 100);
+                    setTimeout(callGetLevelCode, 100); // Retry after 100ms
                 }
             } catch (e) {
                 console.error("Error calling getLevelCode: ", e);
-                setTimeout(callGetLevelCode, 100);
+                setTimeout(callGetLevelCode, 100); // Retry after 100ms
             }
         }
 
@@ -181,8 +173,8 @@
         function enableSugarDrops() {
             playSound();
             let currentUrl = window.location.href;
-            if (!currentUrl.includes('/sugardropindex.html')) {
-                const newUrl = currentUrl.replace('?', 'sugardropindex.html?');
+            if (currentUrl.includes('sugardropindex.html')) {
+                const newUrl = currentUrl.replace('sugardropindex.html', '');
                 window.location.href = newUrl;
             }
         }
@@ -202,13 +194,13 @@
             window.location.href = "https://discord.gg/YXZDezFfTf";
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             setTimeout(callGetLevelCode, 100);
-            document.getElementById("restartButton").addEventListener("click", function () {
+            document.getElementById("restartButton").addEventListener("click", function() {
                 playSound();
                 setTimeout(callGetLevelCode, 100);
             });
-            document.getElementById("shuffleButton").addEventListener("click", function () {
+            document.getElementById("shuffleButton").addEventListener("click", function() {
                 playSound();
                 getUrlsFromFile().then(urls => {
                     if (urls.length > 0) {
@@ -228,7 +220,7 @@
 </head>
 <body>
     <center>
-        <embed id="flash" src="ccgame_levelLoader.swf" type="application/x-shockwave-flash" width="755" height="600">
+        <embed id="flash" src="SugarDrop_loader.swf" type="application/x-shockwave-flash" width="755" height="600">
     </center>
     <button id="restartButton"></button>
     <button id="shuffleButton"></button>

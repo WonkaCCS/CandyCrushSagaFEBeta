@@ -88,16 +88,11 @@ function decodeLevelCode() {
     }
     return null;
 }
-
 document.addEventListener("DOMContentLoaded", function() {
     document.body.style.backgroundImage = `url('${getRandomBackground()}')`;
-
-    const decodedLevelCode = decodeLevelCode();
-    if (decodedLevelCode && decodedLevelCode.includes('"enableSugarTrack":true')) {
-        enableSugarDrops();
-    }
+    
 });
-
+// wq
 window.getLevelCode = function() {
     console.log("GetLevelCode");
     return decodeURIComponent(location.search.split("levelCode=")[1].split("&")[0]).replaceAll("\"","&quot;");

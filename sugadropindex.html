@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candy Crush Custom Level</title>
     <style>
         body {
@@ -9,14 +12,27 @@
             color: white;
             margin: 0;
             padding: 0;
-            height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: flex-start; /* Align items to the start */
+            height: 100vh; /* Full viewport height */
+            overflow: hidden; /* Prevent scrolling */
+            position: relative; /* Allow absolute positioning of dock */
         }
 
         #flash {
             box-shadow: 0px 0px 25px rgba(0, 0, 0, 1.0);
+            margin-top: 20px; /* Space above the flash content */
+            margin-bottom: 20px; /* Space between flash content and buttons */
+        }
+
+        #buttonContainer {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 60px; /* Leave space above the dock */
+            position: relative; /* Allow buttons to overlap with dock */
+            z-index: 1; /* Ensure buttons are above the dock */
         }
 
         #restartButton,
@@ -25,7 +41,6 @@
         #editorButton,
         #basiliskButton,
         #discordButton {
-            position: absolute;
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
@@ -34,67 +49,32 @@
             border: none;
             cursor: pointer;
             background-color: transparent;
+            margin: 5px; /* Space between buttons */
         }
 
-        #restartButton {
-            top: 20px;
-            right: 20px;
-            background-image: url('restart.png');
+        #dock {
+            width: 30%; /* Adjust width of the dock image */
+            height: 15%; /* Maintain aspect ratio */
+            position: absolute; /* Position it at the bottom */
+            bottom: 0; /* Align it to the bottom */
+            left: 50%; /* Center it horizontally */
+            transform: translateX(-50%); /* Adjust for the width of the image */
+            z-index: 0; /* Ensure dock is behind other elements */
         }
 
-        #restartButton:active {
-            background-image: url('restart_pressed.png');
-        }
-
-        #shuffleButton {
-            top: 80px;
-            right: 20px;
-            background-image: url('shuffle.png');
-        }
-
-        #shuffleButton:active {
-            background-image: url('shuffle_pressed.png');
-        }
-
-        #sugarDropButton {
-            top: 140px;
-            right: 20px;
-            background-image: url('disable_sugar_drops.png');
-        }
-
-        #sugarDropButton:active {
-            background-image: url('disable_sugardrops_pressed.png');
-        }
-
-        #editorButton {
-            top: 200px;
-            right: 20px;
-            background-image: url('editor.png');
-        }
-
-        #editorButton:active {
-            background-image: url('editor_pressed.png');
-        }
-
-        #basiliskButton {
-            top: 260px;
-            right: 20px;
-            background-image: url('get_basilisk.png');
-        }
-
-        #basiliskButton:active {
-            background-image: url('get_basilisk_pressed.png');
-        }
-
-        #discordButton {
-            top: 320px;
-            right: 20px;
-            background-image: url('discord.png');
-        }
-
-        #discordButton:active {
-            background-image: url('discord_pressed.png');
-        }
+        /* Additional styles for buttons */
+        #restartButton { background-image: url('restart.png'); }
+        #restartButton:active { background-image: url('restart_pressed.png'); }
+        #shuffleButton { background-image: url('shuffle.png'); }
+        #shuffleButton:active { background-image: url('shuffle_pressed.png'); }
+        #sugarDropButton { background-image: url('disable_sugar_drops.png'); }
+        #sugarDropButton:active { background-image: url('disable_sugardrops_pressed.png'); }
+        #editorButton { background-image: url('editor.png'); }
+        #editorButton:active { background-image: url('editor_pressed.png'); }
+        #basiliskButton { background-image: url('get_basilisk.png'); }
+        #basiliskButton:active { background-image: url('get_basilisk_pressed.png'); }
+        #discordButton { background-image: url('discord.png'); }
+        #discordButton:active { background-image: url('discord_pressed.png'); }
     </style>
     <script>
         function getRandomBackground() {
@@ -111,11 +91,16 @@
             return null;
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             document.body.style.backgroundImage = `url('${getRandomBackground()}')`;
+
+            const decodedLevelCode = decodeLevelCode();
+            if (decodedLevelCode && decodedLevelCode.includes('"enableSugarTrack":true')) {
+                enableSugarDrops();
+            }
         });
 
-        window.getLevelCode = function() {
+        window.getLevelCode = function () {
             console.log("GetLevelCode");
             return decodeURIComponent(location.search.split("levelCode=")[1].split("&")[0]).replaceAll("\"", "&quot;");
         };
@@ -127,11 +112,11 @@
                     flashElement.getLevelCode(decodeURIComponent(location.search.split("levelCode=")[1].split("&")[0]));
                 } else {
                     console.error("getLevelCode is not a function on flash element");
-                    setTimeout(callGetLevelCode, 100); // Retry after 100ms
+                    setTimeout(callGetLevelCode, 100);
                 }
             } catch (e) {
                 console.error("Error calling getLevelCode: ", e);
-                setTimeout(callGetLevelCode, 100); // Retry after 100ms
+                setTimeout(callGetLevelCode, 100);
             }
         }
 
@@ -149,8 +134,8 @@
         function enableSugarDrops() {
             playSound();
             let currentUrl = window.location.href;
-            if (currentUrl.includes('sugardropindex.html')) {
-                const newUrl = currentUrl.replace('sugardropindex.html', '');
+            if (!currentUrl.includes('/sugardropindex.html')) {
+                const newUrl = currentUrl.replace('?', 'sugardropindex.html?');
                 window.location.href = newUrl;
             }
         }
@@ -170,13 +155,13 @@
             window.location.href = "https://discord.gg/YXZDezFfTf";
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             setTimeout(callGetLevelCode, 100);
-            document.getElementById("restartButton").addEventListener("click", function() {
+            document.getElementById("restartButton").addEventListener("click", function () {
                 playSound();
                 setTimeout(callGetLevelCode, 100);
             });
-            document.getElementById("shuffleButton").addEventListener("click", function() {
+            document.getElementById("shuffleButton").addEventListener("click", function () {
                 playSound();
                 getUrlsFromFile().then(urls => {
                     if (urls.length > 0) {
@@ -198,11 +183,14 @@
     <center>
         <embed id="flash" src="SugarDrop_loader.swf" type="application/x-shockwave-flash" width="755" height="600">
     </center>
-    <button id="restartButton"></button>
-    <button id="shuffleButton"></button>
-    <button id="sugarDropButton"></button>
-    <button id="editorButton"></button>
-    <button id="basiliskButton"></button>
-    <button id="discordButton"></button>
+    <img id="dock" src="dock.png" alt="Dock Image">
+    <div id="buttonContainer">
+        <button id="restartButton"></button>
+        <button id="shuffleButton"></button>
+        <button id="sugarDropButton"></button>
+        <button id="editorButton"></button>
+        <button id="basiliskButton"></button>
+        <button id="discordButton"></button>
+    </div>
 </body>
 </html>

@@ -23,8 +23,8 @@
 
         #flash {
             box-shadow: 0px 0px 25px rgba(0, 0, 0, 1.0);
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin: 20px 0;
+            z-index: 1;
         }
 
         #buttonContainer {
@@ -32,16 +32,10 @@
             justify-content: center;
             margin-bottom: 60px;
             position: relative;
-            z-index: 1;
+            z-index: 3;
         }
 
-        #restartButton,
-        #shuffleButton,
-        #sugarDropButton,
-        #editorButton,
-        #basiliskButton,
-        #discordButton,
-        #uploadButton {
+        button {
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
@@ -91,11 +85,7 @@
 
         function decodeLevelCode() {
             const urlParams = new URLSearchParams(window.location.search);
-            const levelCode = urlParams.get('levelCode');
-            if (levelCode) {
-                return decodeURIComponent(levelCode);
-            }
-            return null;
+            return urlParams.get('levelCode') ? decodeURIComponent(urlParams.get('levelCode')) : null;
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -106,7 +96,6 @@
                 enableSugarDrops();
             }
 
-            // File input change event
             document.getElementById("fileInput").addEventListener("change", function (event) {
                 const file = event.target.files[0];
                 if (file) {
@@ -118,19 +107,15 @@
                 }
             });
 
-            // Click event for the upload button
             document.getElementById("uploadButton").addEventListener("click", function () {
                 document.getElementById("fileInput").click();
             });
+
+            setTimeout(callGetLevelCode, 100);
         });
 
-        window.getLevelCode = function () {
-            console.log("GetLevelCode");
-            return decodeURIComponent(location.search.split("levelCode=")[1].split("&")[0]).replaceAll("\"", "&quot;");
-        };
-
         function callGetLevelCode() {
-            var flashElement = document.getElementById("flash");
+            const flashElement = document.getElementById("flash");
             try {
                 if (flashElement && typeof flashElement.getLevelCode === "function") {
                     flashElement.getLevelCode(decodeURIComponent(location.search.split("levelCode=")[1].split("&")[0]));
@@ -145,7 +130,7 @@
         }
 
         function playSound() {
-            var audio = new Audio('press.mp3');
+            const audio = new Audio('press.mp3');
             audio.play();
         }
 
@@ -159,8 +144,7 @@
             playSound();
             let currentUrl = window.location.href;
             if (!currentUrl.includes('/sugardropindex.html')) {
-                const newUrl = currentUrl.replace('?', 'sugardropindex.html?');
-                window.location.href = newUrl;
+                window.location.href = currentUrl.replace('?', 'sugardropindex.html?');
             }
         }
 
@@ -180,11 +164,11 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            setTimeout(callGetLevelCode, 100);
             document.getElementById("restartButton").addEventListener("click", function () {
                 playSound();
                 setTimeout(callGetLevelCode, 100);
             });
+
             document.getElementById("shuffleButton").addEventListener("click", function () {
                 playSound();
                 getUrlsFromFile().then(urls => {
@@ -196,6 +180,7 @@
                     }
                 }).catch(error => console.error('Error reading URLs file:', error));
             });
+
             document.getElementById("sugarDropButton").addEventListener("click", enableSugarDrops);
             document.getElementById("editorButton").addEventListener("click", redirectToEditor);
             document.getElementById("basiliskButton").addEventListener("click", redirectToBasilisk);
@@ -205,7 +190,12 @@
 </head>
 <body>
     <center>
-        <embed id="flash" src="ccgame_levelLoader.swf" type="application/x-shockwave-flash" width="755" height="600">
+        <object id="flash" type="application/x-shockwave-flash" data="ccgame_levelLoader.swf" width="755" height="600">
+            <param name="movie" value="ccgame_levelLoader.swf" />
+            <param name="wmode" value="transparent" />
+            <param name="allowScriptAccess" value="always" />
+            <param name="allowFullScreen" value="true" />
+        </object>
     </center>
     <img id="dock" src="dock.png" alt="Dock Image">
     <div id="buttonContainer">

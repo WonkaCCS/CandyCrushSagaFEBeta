@@ -24,7 +24,19 @@
         #flash {
             box-shadow: 0px 0px 25px rgba(0, 0, 0, 1.0);
             margin: 20px 0;
+            position: relative;
             z-index: 1;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 755px; /* Match SWF width */
+            height: 600px; /* Match SWF height */
+            background: rgba(0, 0, 0, 0); /* Transparent overlay */
+            pointer-events: none; /* Allow clicks through */
+            z-index: 2; /* Sit above the SWF */
         }
 
         #buttonContainer {
@@ -196,6 +208,7 @@
             <param name="allowScriptAccess" value="always" />
             <param name="allowFullScreen" value="true" />
         </object>
+        <div id="overlay"></div>
     </center>
     <img id="dock" src="dock.png" alt="Dock Image">
     <div id="buttonContainer">

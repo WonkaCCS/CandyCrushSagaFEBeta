@@ -21,22 +21,31 @@
             position: relative;
         }
 
-        #flash {
-            box-shadow: 0px 0px 25px rgba(0, 0, 0, 1.0);
-            margin: 20px 0;
+        #flashContainer {
             position: relative;
-            z-index: 1;
+            width: 755px;  /* Match the width of the SWF */
+            height: 600px; /* Match the height of the SWF */
+            margin: 20px 0;
+            overflow: hidden; /* Hide any overflow */
         }
 
-        #overlay {
+        #flash {
+            box-shadow: 0px 0px 25px rgba(0, 0, 0, 1.0);
             position: absolute;
             top: 0;
             left: 0;
-            width: 755px; /* Match SWF width */
-            height: 600px; /* Match SWF height */
-            background: rgba(0, 0, 0, 0); /* Transparent overlay */
-            pointer-events: none; /* Allow clicks through */
-            z-index: 2; /* Sit above the SWF */
+            z-index: 1;
+        }
+
+        #uploadedBackground {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            display: none; /* Initially hidden */
+            object-fit: cover; /* Maintain aspect ratio and cover the area */
         }
 
         #buttonContainer {
@@ -44,7 +53,7 @@
             justify-content: center;
             margin-bottom: 60px;
             position: relative;
-            z-index: 3;
+            z-index: 2;
         }
 
         button {
@@ -113,7 +122,9 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function (e) {
-                        document.body.style.backgroundImage = `url('${e.target.result}')`;
+                        const uploadedBackground = document.getElementById("uploadedBackground");
+                        uploadedBackground.src = e.target.result;
+                        uploadedBackground.style.display = 'block'; // Show the uploaded background
                     };
                     reader.readAsDataURL(file);
                 }
@@ -202,13 +213,15 @@
 </head>
 <body>
     <center>
-        <object id="flash" type="application/x-shockwave-flash" data="ccgame_levelLoader.swf" width="755" height="600">
-            <param name="movie" value="ccgame_levelLoader.swf" />
-            <param name="wmode" value="transparent" />
-            <param name="allowScriptAccess" value="always" />
-            <param name="allowFullScreen" value="true" />
-        </object>
-        <div id="overlay"></div>
+        <div id="flashContainer">
+            <img id="uploadedBackground" alt="Uploaded Background" style="display: none;">
+            <object id="flash" type="application/x-shockwave-flash" data="ccgame_levelLoader.swf" width="755" height="600">
+                <param name="movie" value="ccgame_levelLoader.swf" />
+                <param name="wmode" value="transparent" />
+                <param name="allowScriptAccess" value="always" />
+                <param name="allowFullScreen" value="true" />
+            </object>
+        </div>
     </center>
     <img id="dock" src="dock.png" alt="Dock Image">
     <div id="buttonContainer">

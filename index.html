@@ -23,7 +23,7 @@
 
         #flashContainer {
             position: relative;
-            width: 755px;  /* Match the width of the SWF */
+            width: 755px; /* Match the width of the SWF */
             height: 600px; /* Match the height of the SWF */
             margin: 20px 0;
             overflow: hidden; /* Hide any overflow */
@@ -51,8 +51,10 @@
         #buttonContainer {
             display: flex;
             justify-content: center;
-            margin-bottom: 60px;
-            position: relative;
+            position: absolute; /* Position relative to the container */
+            bottom: 15%; /* Adjust based on the height of your dock */
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 2;
         }
 
@@ -71,7 +73,7 @@
         #dock {
             width: 33%;
             height: 15%;
-            position: absolute;
+            position: relative; /* Keep this relative */
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);

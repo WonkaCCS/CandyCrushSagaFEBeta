@@ -44,8 +44,8 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            display: block; /* Show by default */
-            background-color: black; /* Default solid black color */
+            display: none; /* Initially hidden */
+            object-fit: cover; /* Maintain aspect ratio and cover the area */
         }
 
         #buttonContainer {
@@ -112,8 +112,6 @@
         document.addEventListener("DOMContentLoaded", function () {
             document.body.style.backgroundImage = `url('${getRandomBackground()}')`;
 
-            const uploadedBackground = document.getElementById("uploadedBackground");
-
             const decodedLevelCode = decodeLevelCode();
             if (decodedLevelCode && decodedLevelCode.includes('"enableSugarTrack":true')) {
                 enableSugarDrops();
@@ -124,8 +122,9 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function (e) {
+                        const uploadedBackground = document.getElementById("uploadedBackground");
                         uploadedBackground.src = e.target.result;
-                        uploadedBackground.style.backgroundColor = ''; // Reset to default
+                        uploadedBackground.style.display = 'block'; // Show the uploaded background
                     };
                     reader.readAsDataURL(file);
                 }
@@ -215,7 +214,7 @@
 <body>
     <center>
         <div id="flashContainer">
-            <div id="uploadedBackground" style="display: block;"></div>
+            <img id="uploadedBackground" alt="Uploaded Background" style="display: none;">
             <object id="flash" type="application/x-shockwave-flash" data="ccgame_levelLoader.swf" width="755" height="600">
                 <param name="movie" value="ccgame_levelLoader.swf" />
                 <param name="wmode" value="transparent" />

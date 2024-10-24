@@ -30,7 +30,8 @@
         }
 
         #flash {
-            box-shadow: 0px 0px 25px rgba(0, 0, 0, 1.0);
+            box-shadow: 0px 0px 25px rgba(0, 0, 0, 1.0), 
+                        0 0 15px rgba(0, 0, 0, 0.5); /* Side shadow effect */
             position: absolute;
             top: 0;
             left: 0;
@@ -46,6 +47,20 @@
             z-index: 0;
             display: none; /* Initially hidden */
             object-fit: cover; /* Maintain aspect ratio and cover the area */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* Shadow effect */
+        }
+
+        #blurredBackground {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Behind everything */
+            display: none; /* Initially hidden */
+            filter: blur(10px); /* Blur effect */
+            object-fit: cover; /* Maintain aspect ratio */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* Shadow effect */
         }
 
         #buttonContainer {
@@ -123,8 +138,12 @@
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const uploadedBackground = document.getElementById("uploadedBackground");
+                        const blurredBackground = document.getElementById("blurredBackground");
+
                         uploadedBackground.src = e.target.result;
+                        blurredBackground.src = e.target.result;
                         uploadedBackground.style.display = 'block'; // Show the uploaded background
+                        blurredBackground.style.display = 'block'; // Show the blurred background
                     };
                     reader.readAsDataURL(file);
                 }
@@ -214,6 +233,7 @@
 <body>
     <center>
         <div id="flashContainer">
+            <img id="blurredBackground" alt="Blurred Background" style="display: none;">
             <img id="uploadedBackground" alt="Uploaded Background" style="display: none;">
             <object id="flash" type="application/x-shockwave-flash" data="ccgame_levelLoader.swf" width="755" height="600">
                 <param name="movie" value="ccgame_levelLoader.swf" />
